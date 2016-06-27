@@ -1,0 +1,25 @@
+v0.1.0, 25/04/2016  -- Initial release.
+v0.1.1, 5/05/2016   -- Structure refactoring. Geckoboard bar chart support, hosted graphite support added.
+v0.1.2, 9/05/2016   -- Scheduling of searches in different threads. Data_helper, request_helper classes. Number_Stat support added. Initial unit tests introduced.
+v0.1.3, 12/05/2016  -- Data transformation and push strategies implemented. Unit tests implementations continued.
+v0.1.4, 19/05/2016  -- Data helper code moved to separate service classes for each service.
+                       Miscellaneous daemon and single instance problems fixed.
+                       Start-stop command groups and additional options added.
+                       Problems with logging structure is fixed now.
+                       We are now able to read config file and configure the app periodically.
+                       New config file structure introduced. Got rid of some unnecessary parsing code needed with old ConfigParser library.
+                       New unit tests added.
+                       General code cleanup.
+                       Minor fixes.
+v0.1.5, 20/05/2016  -- Dynamically discovering service files. No other code change but the service module itself is required after this new feature.
+                       dummy_service added as a skeleton and example service.
+                       Documentation.
+                       Redirected logs to stdout in foreground mode.
+                       Minor refactoring.
+v0.1.6, 20/06/2016  -- Refactoring for search class. Search is a separate module now.
+                       Comments added for main module methods.
+                       Minor fixes and renaming.
+v0.1.7, 22/06/2016  -- Minor changes to lerestresponse module: we don't need to store ts data in memory now.
+                       Code cleanup.
+                       Unit tests are introduced for search class.
+                       General unit test improvements.
