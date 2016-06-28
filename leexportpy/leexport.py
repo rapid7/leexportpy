@@ -12,12 +12,12 @@ from daemonize import Daemonize
 from twisted.internet import reactor
 from twisted.internet import task
 
-import services
-from search import Search
+from leexportpy import services
+from leexportpy.search import Search
 
-config = None
-service_class_mapper = {}
-search_tasks = []
+CONFIG = None
+SERVICE_CLASS_MAPPER = {}
+SEARCH_TASKS = []
 
 PID_FILE_PATH = '/var/run/leexportpy.pid'
 LOG_FILE_PATH = '/var/log/leexportpy.log'
@@ -30,22 +30,27 @@ LOGGING_LEVEL = logging.DEBUG
 def configure_options():
     """Configure cli argument configs"""
 
-    parser = argparse.ArgumentParser(prog='leexportpy', description='Leexportpy by Logentries by Rapid7')
+    parser = argparse.ArgumentParser(prog='leexportpy',
+                                     description='Leexportpy by Logentries by Rapid7')
     subparsers = parser.add_subparsers(help='subcommands')
-    start_parser = subparsers.add_parser(name='start', help='this command group is used while starting the app')
+    start_parser = subparsers.add_parser(name='start', help='this command group is used while '
+                                                            'starting the app')
     start_parser.add_argument('-c', '--config-file', help='Config file path.', required=True)
-    start_parser.add_argument('-d', '--daemonize', help='Daemonize the process or not', required=False, default=False,
+    start_parser.add_argument('-d', '--daemonize', help='Daemonize the process or not',
+                              required=False, default=False,
                               action='store_true')
     subparsers.add_parser(name='stop', help='this command is used while stopping the daemon')
 
     return parser.parse_args()
 
 
-cli_args = configure_options()
+CLI_ARGS = configure_options()
 
 
 def discover_services():
-    """Discover services placed in 'services' directory. """
+    """
+    Discover services placed in 'services' directory.
+    """
 
     discovered_services = {}
     for importer, modname, ispkg in pkgutil.iter_modules(services.__path__):
@@ -57,20 +62,26 @@ def discover_services():
                 class_name += str.capitalize(word)
             discovered_services[service_name] = {'module': modname, 'class': class_name}
         else:
-            logging.warn("Extraneous file found in the services directory while discovering services: %s", modname)
+            logging.warn("Extraneous file found in the services directory while discovering "
+                         "services: %s", modname)
 
-    logging.info("Discovered services after analyzing files in services directory: %s" + str(discovered_services))
+    logging.info("Discovered services after analyzing files in services directory: %s" + str(
+        discovered_services))
     import_and_load_services(discovered_services)
 
 
 def import_and_load_services(discovered_services):
+    """
+    Do the importing and loading of service classes into memory.
+
+    """
     for service_name, data in discovered_services.items():
         class_fqn = 'leexportpy.services.' + data['module'] + '.' + data['class']
         logging.info("Class fqn: %s", class_fqn)
         service_class = locate(class_fqn)
-        service_class_mapper[service_name] = service_class
+        SERVICE_CLASS_MAPPER[service_name] = service_class
 
-    logging.info("Discovered & reflected service map: " + str(service_class_mapper))
+    logging.info("Discovered & reflected service map: " + str(SERVICE_CLASS_MAPPER))
 
 
 def do_every(interval, job, params=None):
@@ -86,7 +97,7 @@ def do_every(interval, job, params=None):
     logging.info("Scheduling job: %r, params: %r", job, params)
     if params:
         looping_task = task.LoopingCall(job, params)
-        search_tasks.append(looping_task)
+        SEARCH_TASKS.append(looping_task)
     else:
         looping_task = task.LoopingCall(job)
 
@@ -101,7 +112,7 @@ def do_search_concurrently(search):
     """
     logging.debug("Scheduling search to run concurrently.")
     reactor.callInThread(search.start)
-    search_tasks.append(search)
+    SEARCH_TASKS.append(search)
 
 
 def print_thread_info():
@@ -118,7 +129,8 @@ def start_leexportpy_jobs():
     Start main jobs. Configure logging. Run twisted reactor.
     """
 
-    if cli_args.daemonize is True:  # we are configuring logging here to include it in the daemon context.
+    if CLI_ARGS.daemonize is True:  # we are configuring logging here to include it in the
+                                    # daemon context.
         logging.basicConfig(filename=LOG_FILE_PATH, level=LOGGING_LEVEL, format=LOG_FORMAT)
     else:
         logging.basicConfig(stream=sys.stdout, level=LOGGING_LEVEL, format=LOG_FORMAT)
@@ -132,28 +144,30 @@ def start_leexportpy_jobs():
 
 def start_search_tasks():
     """
-    Before everything, kill if there is any running search tasks. Then start the search tasks concurrently.
+    Before everything, kill if there is any running search tasks. Then start the search tasks
+    concurrently.
 
     """
-    global search_tasks
+    global SEARCH_TASKS
     logging.info("(Re)populated config collections from config file. "
                  "Cancelling previous loops and restarting them again with the new config.")
 
-    for looping_task in search_tasks:
+    for looping_task in SEARCH_TASKS:
         logging.info("Cancelling this loop: %r", looping_task)
         looping_task.stop()
-    search_tasks = []
+    SEARCH_TASKS = []
 
-    searches = config['Searches'].values()
+    searches = CONFIG['Searches'].values()
     search_count = len(searches)
     logging.info("Search count: %d", search_count)
     reactor.suggestThreadPoolSize(search_count)
     try:
         for search in searches:
-            search_obj = Search(service_class_mapper.get(search['destination']['service']), search, config)
+            search_obj = Search(SERVICE_CLASS_MAPPER.get(search['destination']['service']), search,
+                                CONFIG)
             do_search_concurrently(search_obj)
-    except Exception as e:
-        logging.exception("Exception occurred while processing search. %s", e.message)
+    except Exception as exception:
+        logging.exception("Exception occurred while processing search. %s", exception.message)
 
 
 def load_config_start_searches():
@@ -161,12 +175,12 @@ def load_config_start_searches():
     Load config from config file provided in cli_args and start search tasks.
 
     """
-    global config
-    config_file_path = cli_args.config_file
-    logging.info("Config file path: %s", cli_args.config_file)
+    global CONFIG
+    config_file_path = CLI_ARGS.config_file
+    logging.info("Config file path: %s", CLI_ARGS.config_file)
     if config_file_path:
-        config = ConfigObj(config_file_path, file_error=True, raise_errors=True)
-        logging.info("Updated config file content: %s", config)
+        CONFIG = ConfigObj(config_file_path, file_error=True, raise_errors=True)
+        logging.info("Updated config file content: %s", CONFIG)
         start_search_tasks()
     else:
         logging.error("This should not happen.")
@@ -182,15 +196,16 @@ def main():
     if 'start' in sys.argv:
         print "Trying to run the app..."
 
-        if cli_args.daemonize is True:
+        if CLI_ARGS.daemonize is True:
             if os.path.isfile(PID_FILE_PATH) is not True:
-                print "Trying to run in daemonized mode. Check log file for further insight: %s", LOG_FILE_PATH
+                print "Trying to run in daemonized mode. Check log file for further insight: " \
+                      "%s", LOG_FILE_PATH
                 daemon = setup_daemon()
                 daemon.start()
             else:
                 print "Tried to run the app but an existing pid file found. " \
                       "Looks like it was not shutdown gracefully last time." \
-                      " Please check if there are any existing processes and remove the pid file: " + PID_FILE_PATH
+                      "file: " + PID_FILE_PATH
         else:
             print "Running in foreground, CTRL+C to exit the process."
             start_leexportpy_jobs()
@@ -199,13 +214,15 @@ def main():
         try:
             print "Trying to terminate the daemon..."
             terminate()
-        except IOError as e:
-            if e.errno == 2:  # meaning pid file not found and so there is no running instance
+        except IOError as exception:
+            if exception.errno == 2:  # meaning pid file not found and so there is no running
+                # instance
                 print "No leexportpy instance found so it could not be stopped."
-            elif e.errno == 3:
-                print "Pid file found but no such process was found. Please remove the pid file at: " + PID_FILE_PATH
+            elif exception.errno == 3:
+                print "Pid file found but no such process was found. Please remove the pid file " \
+                      "at: " + PID_FILE_PATH
             else:
-                print "An unexpected error occurred while stopping leexportpy: ", e
+                print "An unexpected error occurred while stopping leexportpy: ", exception
                 logging.exception("An unexpected error occurred while stopping leexportpy")
     else:
         print "This should not happen."

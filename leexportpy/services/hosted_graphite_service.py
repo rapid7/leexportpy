@@ -7,32 +7,56 @@ import requests
 from leexportpy.service import Service
 
 DATEFORMAT = '%Y-%m-%dT%H:%M:%SZ'
-
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class HostedGraphiteService(Service):
-    def __init__(self, data, api_key, search):
-        Service.__init__(self, data, api_key, search)
+    """
+    Hosted graphite service module that defines necessary transform and push algorithms.
+    """
+    def __init__(self, data, api_key, destination_config):
+        """
+        Initialize HostedGraphiteService.
+        :param data:    raw data.
+        :param api_key: hosted graphite api key.
+        :param destination_config:
+        """
+        Service.__init__(self, data, api_key, destination_config)
 
     def process(self):
+        """
+        Process HostedGraphite task.
+        """
         self.push(self.transform())
 
     def push(self, payload):
+        """
+        Push payload to hosted_graphite url along with api key.
+
+        :param payload: Data to be pushed.
+        """
         if super(HostedGraphiteService, self).push(payload):    # payload is not none
             push_url = self.destination_config.get('push_url')
             resp = requests.put(push_url, auth=(self.api_key, ''), data=payload)
-            logger.info("Payload to be pushed: %s", payload)
-            logger.info("Response code: %d", resp.status_code)
-            logger.debug("Response text: %s", resp.text)
+            LOGGER.info("Payload to be pushed: %s", payload)
+            LOGGER.info("Response code: %d", resp.status_code)
+            LOGGER.debug("Response text: %s", resp.text)
         else:
-            logger.warning("Payload is None")
+            LOGGER.warning("Payload is None")
 
     @staticmethod
     def convert_datetime_to_timestamp(date):
+        """
+        Convert datetime to timestamp. Only for Hosted Graphite.
+
+        :param date: date to be converted to timestamp.
+        """
         return time.mktime(datetime.datetime.strptime(date, DATEFORMAT).timetuple())
 
     def transform(self):
+        """
+        Transform raw data to hosted graphite data.
+        """
         x_axis = self.data.get_keys()
         values = self.data.get_values()
         data = ""

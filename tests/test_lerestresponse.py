@@ -36,8 +36,8 @@ def test_get_count():
     group_obj = LeRestResponse(resp_ex.FULL_GROUP_RESP)
     ts_obj = LeRestResponse(resp_ex.FULL_TIMESERIES_RESP)
 
-    assert group_obj.get_count() == EXPECTED_COUNT
-    assert ts_obj.get_count() == EXPECTED_COUNT
+    assert group_obj.get_statistics_count() == EXPECTED_COUNT
+    assert ts_obj.get_statistics_count() == EXPECTED_COUNT
 
 
 def test_get_data_length():
