@@ -5,7 +5,7 @@ import datetime
 DATEFORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
-# this module is still in development and not in use in any other place in leexport.
+# this module is still in development and not in use in any other place in leexportpy.
 class QueryResponse(object):
     def __init__(self, logs, metadata, statistics):
         """
@@ -15,7 +15,8 @@ class QueryResponse(object):
         :type statistics: dict
         """
         self.logs = logs
-        self.leql = QueryLeql(metadata['during']['from'], metadata['during']['to'], metadata['statement'])
+        self.leql = QueryLeql(metadata['during']['from'], metadata['during']['to'],
+                              metadata['statement'])
         self.statistics = statistics
 
     def get_count(self):
@@ -71,8 +72,8 @@ class TimeseriesQueryResponse(QueryResponse):
         return values
 
     @staticmethod
-    def convert_timestamp_to_str(ts):
-        return datetime.datetime.fromtimestamp(int(ts) / 1000).strftime(DATEFORMAT)
+    def convert_timestamp_to_str(timestamp):
+        return datetime.datetime.fromtimestamp(int(timestamp) / 1000).strftime(DATEFORMAT)
 
 
 class GroupbyQueryResponse(QueryResponse):

@@ -4,23 +4,38 @@ import requests
 
 from leexportpy.service import Service
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class DummyService(Service):
+    """
+    En example service class to show how to provide a new service support.
+    """
     def __init__(self, data, api_key, destination_config):
+        """
+        Initialize DummyService
+        """
         super(DummyService, self).__init__(data, api_key, destination_config)
 
     def transform(self):
+        """
+        Transform DummyService data.
+        """
         return {'payload': self.data}
 
     def push(self, payload):
+        """
+        Push DummyService data.
+        """
         push_url = self.destination_config.get('push_url')
-        logger.info("This is my push url: %s", push_url)
-        logger.info("This is my api_key: %s", self.api_key)
-        logger.info("This is my payload: %s", payload)
-        logger.info("What else does a service needs to be pushed?")
+        LOGGER.info("This is my push url: %s", push_url)
+        LOGGER.info("This is my api_key: %s", self.api_key)
+        LOGGER.info("This is my payload: %s", payload)
+        LOGGER.info("What else does a service needs to be pushed?")
         requests.put(push_url, payload)
 
     def process(self):
+        """
+        Process DummyService. Transform and push.
+        """
         self.push(self.transform())
