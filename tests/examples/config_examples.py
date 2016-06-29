@@ -1,4 +1,4 @@
-import request_examples
+from tests.examples import request_examples
 
 GECKO_NUMBER_STAT_CONFIG = {"text": "number_stat_text",
                             "widget_type": "number_stat",

@@ -1,4 +1,4 @@
-import examples.response_examples as resp_ex
+import tests.examples.response_examples as resp_ex
 from leexportpy.lerestresponse import LeRestResponse
 
 EXPECTED_COUNT = 1234
