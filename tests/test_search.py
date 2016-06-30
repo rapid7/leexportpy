@@ -5,8 +5,8 @@ import requests
 from mock import patch
 from twisted.internet import task
 
-from examples import config_examples as conf_ex
-from examples import request_examples as req_ex
+from tests.examples import config_examples as conf_ex
+from tests.examples import request_examples as req_ex
 from leexportpy.search import Search
 from leexportpy.services.dummy_service import DummyService
 

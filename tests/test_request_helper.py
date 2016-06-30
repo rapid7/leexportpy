@@ -2,7 +2,7 @@ import httpretty
 from mock import MagicMock, patch
 
 import leexportpy.request_helper as helper
-from examples import request_examples as req_ex
+from tests.examples import request_examples as req_ex
 
 
 @httpretty.activate

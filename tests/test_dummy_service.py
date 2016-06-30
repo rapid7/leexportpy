@@ -1,7 +1,7 @@
 import httpretty
 from mock import patch
 
-from examples import request_examples as req_ex
+from tests.examples import request_examples as req_ex
 from leexportpy.services.dummy_service import DummyService
 
 

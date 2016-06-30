@@ -1,9 +1,9 @@
 import httpretty
 from mock import patch
 
-from examples import config_examples as conf_ex
-from examples import request_examples as req_ex
-from examples import response_examples as resp_ex
+from tests.examples import config_examples as conf_ex
+from tests.examples import request_examples as req_ex
+from tests.examples import response_examples as resp_ex
 from leexportpy.lerestresponse import LeRestResponse
 from leexportpy.services.geckoboard_service import GeckoboardService
 
