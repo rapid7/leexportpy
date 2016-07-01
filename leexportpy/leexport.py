@@ -24,7 +24,7 @@ LOG_FILE_PATH = '/var/log/leexportpy.log'
 PRINT_THREAD_INFO_INTERVAL_SECONDS = 100
 CONFIG_LOAD_INTERVAL_SECONDS = 300
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(name)s - %(threadName)s - %(message)s"
-LOGGING_LEVEL = logging.DEBUG
+LOGGING_LEVEL = logging.INFO
 
 
 def configure_options():

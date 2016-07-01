@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='leexportpy',
-    version='0.1.5',
+    version='0.1.7',
     author='Safa Topal',
     author_email='Safa_Topal@rapid7.com',
     packages=find_packages(exclude=['*tests*']),
