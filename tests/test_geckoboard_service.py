@@ -8,7 +8,7 @@ from leexportpy.services.geckoboard_service import GeckoboardService
 
 
 def test_number_stat_process_calls_push():
-    with patch.object(GeckoboardService, 'push') as mocked_number_stat_push:
+    with patch.object(GeckoboardService, '_push') as mocked_number_stat_push:
         gecko_job_number_stat = GeckoboardService(resp_ex.FULL_TIMESERIES_RESP,
                                                   req_ex.SERVICE_API_KEY,
                                                   conf_ex.GECKO_NUMBER_STAT_CONFIG)
@@ -17,7 +17,7 @@ def test_number_stat_process_calls_push():
 
 
 def test_line_chart_process_calls_push():
-    with patch.object(GeckoboardService, 'push') as mocked_line_chart_push:
+    with patch.object(GeckoboardService, '_push') as mocked_line_chart_push:
         gecko_job_line_chart = GeckoboardService(resp_ex.FULL_TIMESERIES_RESP,
                                                  req_ex.SERVICE_API_KEY,
                                                  conf_ex.GECKO_LINE_CHART_CONFIG)
@@ -26,7 +26,7 @@ def test_line_chart_process_calls_push():
 
 
 def test_pie_chart_process_calls_push():
-    with patch.object(GeckoboardService, 'push') as mocked_pie_chart_push:
+    with patch.object(GeckoboardService, '_push') as mocked_pie_chart_push:
         gecko_job_pie_chart = GeckoboardService(resp_ex.FULL_GROUP_RESP,
                                                 req_ex.SERVICE_API_KEY,
                                                 conf_ex.GECKO_PIE_CHART_CONFIG)
@@ -35,7 +35,7 @@ def test_pie_chart_process_calls_push():
 
 
 def test_bar_chart_process_calls_push():
-    with patch.object(GeckoboardService, 'push') as mocked_bar_chart_push:
+    with patch.object(GeckoboardService, '_push') as mocked_bar_chart_push:
         gecko_job_bar_chart = GeckoboardService(resp_ex.FULL_GROUP_RESP,
                                                 req_ex.SERVICE_API_KEY,
                                                 conf_ex.GECKO_BAR_CHART_CONFIG)
@@ -50,7 +50,7 @@ def test__number_stat_push():
     gecko_job_number_stat = GeckoboardService(resp_ex.FULL_TIMESERIES_RESP,
                                               req_ex.SERVICE_API_KEY,
                                               conf_ex.GECKO_NUMBER_STAT_CONFIG)
-    gecko_job_number_stat.push({})
+    gecko_job_number_stat._push({})
 
     assert httpretty.has_request()
 
@@ -62,7 +62,7 @@ def test_line_chart_push():
     gecko_job_line_chart = GeckoboardService(resp_ex.FULL_TIMESERIES_RESP,
                                              req_ex.SERVICE_API_KEY,
                                              conf_ex.GECKO_LINE_CHART_CONFIG)
-    gecko_job_line_chart.push({})
+    gecko_job_line_chart._push({})
 
     assert httpretty.has_request()
 
@@ -74,7 +74,7 @@ def test_pie_chart_push():
     gecko_job_pie_chart = GeckoboardService(resp_ex.FULL_GROUP_RESP,
                                             req_ex.SERVICE_API_KEY,
                                             conf_ex.GECKO_PIE_CHART_CONFIG)
-    gecko_job_pie_chart.push({})
+    gecko_job_pie_chart._push({})
 
     assert httpretty.has_request()
 
@@ -86,7 +86,7 @@ def test_bar_chart_push():
     gecko_job_bar_chart = GeckoboardService(resp_ex.FULL_GROUP_RESP,
                                             req_ex.SERVICE_API_KEY,
                                             conf_ex.GECKO_BAR_CHART_CONFIG)
-    gecko_job_bar_chart.push({})
+    gecko_job_bar_chart._push({})
 
     assert httpretty.has_request()
 
@@ -147,36 +147,36 @@ def test_format_line_chart_data():
 
 
 def test_line_chart_transform():
-    with patch.object(GeckoboardService, 'transform', return_value=None) as mock_transform:
+    with patch.object(GeckoboardService, '_transform', return_value=None) as mock_transform:
         gecko_job_line_chart = GeckoboardService(resp_ex.FULL_TIMESERIES_RESP,
                                                  req_ex.SERVICE_API_KEY,
                                                  conf_ex.GECKO_LINE_CHART_CONFIG)
-        gecko_job_line_chart.transform()
+        gecko_job_line_chart._transform()
         assert mock_transform.called
 
 
 def test_pie_chart_transform():
-    with patch.object(GeckoboardService, 'transform', return_value=None) as mock_transform:
+    with patch.object(GeckoboardService, '_transform', return_value=None) as mock_transform:
         gecko_job_pie_chart = GeckoboardService(resp_ex.FULL_GROUP_RESP,
                                                 req_ex.SERVICE_API_KEY,
                                                 conf_ex.GECKO_PIE_CHART_CONFIG)
-        gecko_job_pie_chart.transform()
+        gecko_job_pie_chart._transform()
         assert mock_transform.called
 
 
 def test_number_stat_transform():
-    with patch.object(GeckoboardService, 'transform', return_value=None) as mock_transform:
+    with patch.object(GeckoboardService, '_transform', return_value=None) as mock_transform:
         gecko_job_number_stat = GeckoboardService(resp_ex.FULL_TIMESERIES_RESP,
                                                   req_ex.SERVICE_API_KEY,
                                                   conf_ex.GECKO_NUMBER_STAT_CONFIG)
-        gecko_job_number_stat.transform()
+        gecko_job_number_stat._transform()
         assert mock_transform.called
 
 
 def test_bar_chart_transform():
-    with patch.object(GeckoboardService, 'transform', return_value=None) as mock_transform:
+    with patch.object(GeckoboardService, '_transform', return_value=None) as mock_transform:
         gecko_job_bar_chart = GeckoboardService(resp_ex.FULL_GROUP_RESP,
                                                 req_ex.SERVICE_API_KEY,
                                                 conf_ex.GECKO_BAR_CHART_CONFIG)
-        gecko_job_bar_chart.transform()
+        gecko_job_bar_chart._transform()
         assert mock_transform.called

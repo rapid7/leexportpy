@@ -6,6 +6,9 @@ DATEFORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
 class QueryResponse(object):
+    """
+    Base class to handle event and statistics responses.
+    """
     def __init__(self, data):
         """
         Initialize query response
@@ -28,6 +31,9 @@ class QueryResponse(object):
 
 
 class StatisticsResponse(QueryResponse):
+    """
+    Base class to handle GroupBy and Timeseries query results.
+    """
     def __init__(self, data):
         """
         Initialize statistics query
@@ -97,10 +103,16 @@ class StatisticsResponse(QueryResponse):
         raise NotImplementedError("Call to abstract method")
 
     def to_json(self):
+        """
+        Convert statistics response to json.
+        """
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
 
 class TimeSeriesStatisticsResponse(StatisticsResponse):
+    """
+    Class that handles timeseries results of REST API.
+    """
     def __init__(self, data):
         """
         Initialize timeseries statistics response
@@ -153,10 +165,16 @@ class TimeSeriesStatisticsResponse(StatisticsResponse):
 
     @staticmethod
     def convert_timestamp_to_str(timestamp):
+        """
+        Convert given timestamp to date string in the given format.
+        """
         return datetime.datetime.fromtimestamp(int(timestamp) / 1000).strftime(DATEFORMAT)
 
 
 class GroupByStatisticsResponse(StatisticsResponse):
+    """
+    Class that handles group by results of REST API.
+    """
     def __init__(self, data):
         """
         Initialize group by statistics response
@@ -198,6 +216,9 @@ class GroupByStatisticsResponse(StatisticsResponse):
 
 
 class QueryLeql(object):
+    """
+    LEQL class that maps to LEQL data in responses.
+    """
     def __init__(self, from_timestamp, to_timestamp, statement):
         """
         Initialize LEQL
@@ -206,4 +227,7 @@ class QueryLeql(object):
         self.statement = statement
 
     def to_json(self):
+        """
+        Convert LEQL to json.
+        """
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)

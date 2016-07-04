@@ -29,14 +29,14 @@ class GeckoboardService(Service):
         """
         Process service with related data, api key and config. Transform and push.
         """
-        geckoboard_data = self.transform()
-        self.push(geckoboard_data)
+        geckoboard_data = self._transform()
+        self._push(geckoboard_data)
 
-    def push(self, payload):
+    def _push(self, payload):
         """
         Push transformed data.
         """
-        if super(GeckoboardService, self).push(payload):  # payload is not none
+        if super(GeckoboardService, self)._push(payload):  # payload is not none
             push_url = self.destination_config.get('push_url')
             payload["api_key"] = self.api_key
             push = requests.post(push_url, json.dumps(payload))
@@ -46,7 +46,7 @@ class GeckoboardService(Service):
         else:
             LOGGER.warning("Payload is None")
 
-    def transform(self):
+    def _transform(self):
         """
         Transform data to related geckoboard widget data in destination_config
         """

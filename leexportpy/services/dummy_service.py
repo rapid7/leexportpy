@@ -17,13 +17,13 @@ class DummyService(Service):
         """
         super(DummyService, self).__init__(response, api_key, destination_config)
 
-    def transform(self):
+    def _transform(self):
         """
         Transform DummyService data.
         """
         return {'payload': self.response}
 
-    def push(self, payload):
+    def _push(self, payload):
         """
         Push DummyService data.
         """
@@ -38,4 +38,4 @@ class DummyService(Service):
         """
         Process DummyService. Transform and push.
         """
-        self.push(self.transform())
+        self._push(self._transform())
