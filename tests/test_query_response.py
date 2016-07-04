@@ -15,34 +15,64 @@ def test_queryleql():
     assert "to" in during
 
 
-def test_queryresponse():
-    response = queryresponse.QueryResponse(resp_ex.LOGS, resp_ex.LEQL,
-                                           resp_ex.GROUP_STATISTICS)
+def test_query_response():
+    response = queryresponse.QueryResponse(resp_ex.FULL_TIMESERIES_RESP)
+    assert response.is_events(response.data) is False
+    assert response.is_statistics(response.data) is True
+
+
+def test_statistics_response():
+    response = queryresponse.StatisticsResponse(resp_ex.FULL_GROUP_RESP)
 
     expected_count = 1234
+    expected_granularity = 120000
+    expected_from_ts = 614563200000
+    expected_to_ts = 1459296000000
+
     assert "leql" in response.to_json()
-    assert "logs" in response.to_json()
     assert "statistics" in response.to_json()
     assert response.get_count() == expected_count
+    assert response.get_granularity() == expected_granularity
+    assert response.get_from() == expected_from_ts
+    assert response.get_to() == expected_to_ts
+    assert response.is_timeseries(response.data) is False
+    assert response.is_groupby(response.data) is True
+
+    with pytest.raises(NotImplementedError):
+        assert response.get_data_length()
     with pytest.raises(NotImplementedError):
         response.get_keys()
     with pytest.raises(NotImplementedError):
         response.get_values()
 
 
-def test_timeseriesresponse():
-    ts_response = queryresponse.TimeseriesQueryResponse(resp_ex.LOGS, resp_ex.LEQL,
-                                                        resp_ex.TIMESERIES_STATISTICS)
+def test_statistics_response_with_timeseries():
+    response = queryresponse.StatisticsResponse(resp_ex.FULL_TIMESERIES_RESP)
+    assert response.is_timeseries(response.data) is True
+    assert response.is_groupby(response.data) is False
+
+
+def test_timeseries_response():
+    ts_response = queryresponse.TimeSeriesStatisticsResponse(resp_ex.FULL_TIMESERIES_RESP)
     expected_data_length = 10
-    assert ts_response.get_values() is not None
+    expected_value = 2931
+    expected_count = 27733.0
+    expected_key = ts_response.convert_timestamp_to_str(614563200000)
+    assert ts_response.get_timeseries() == resp_ex.TIMESERIES_STATISTICS['timeseries'][
+        'global_timeseries']
+    assert expected_value in ts_response.get_values()
     assert ts_response.get_data_length() == expected_data_length
-    assert ts_response.get_keys() is not None
+    assert expected_key in ts_response.get_keys()
+    assert ts_response.get_count() == expected_count
 
 
-def test_groupresponse():
-    group_response = queryresponse.GroupbyQueryResponse(resp_ex.LOGS, resp_ex.LEQL,
-                                                        resp_ex.GROUP_STATISTICS)
+def test_group_response():
+    group_response = queryresponse.GroupByStatisticsResponse(resp_ex.FULL_GROUP_RESP)
     expected_group_count = 4
+    expected_value = 802.0
+    expected_key = '200'
     assert group_response.get_data_length() == expected_group_count
-    assert group_response.get_values() is not None
-    assert group_response.get_keys() is not None
+    assert expected_value in group_response.get_values()
+    assert expected_key in group_response.get_keys()
+    assert group_response.get_groups() == resp_ex.GROUP_STATISTICS['groups']
+

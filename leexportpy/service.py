@@ -2,15 +2,15 @@ class Service(object):
     """
     Base class for service implementations in 'services' directory.
     """
-    def __init__(self, data, api_key, destination_config):
+    def __init__(self, response, api_key, destination_config):
         """
         Initialize service.
 
-        :param data:                data to be transformed
+        :param response:            data to be transformed
         :param api_key:             api key for 3rd party
         :param destination_config:  destination config of search
         """
-        self.data = data
+        self.response = response
         self.api_key = api_key
         self.destination_config = destination_config
 

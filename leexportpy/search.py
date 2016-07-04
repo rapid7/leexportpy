@@ -4,7 +4,6 @@ import logging
 from twisted.internet import task
 
 from leexportpy import request_helper
-from leexportpy.lerestresponse import LeRestResponse
 
 LOGGER = logging.getLogger(__name__)
 
@@ -13,7 +12,9 @@ class Search(object):
     """
     Class that handles search and push algorithms for exports.
     """
+
     def __init__(self, service_class, search_config, config):
+
         """
         Initialize this Search object with the related search_config.
 
@@ -31,7 +32,7 @@ class Search(object):
 
         :param resp: the final response object.
         """
-        response_metric = LeRestResponse(resp.json())
+        LOGGER.debug("Receieved final response: %s", resp.json())
         destination_config = self.search_config.get('destination')
         service_name = destination_config.get('service')
         service_api_key = self.config['Services'][service_name].get('api_key')
@@ -39,14 +40,13 @@ class Search(object):
         if self.service_class:
             LOGGER.info("A discovered service! "
                         "Service name: %s, class: %r", service_name, self.service_class)
-            service_object = self.service_class(response_metric, service_api_key,
+            service_object = self.service_class(resp.json(), service_api_key,
                                                 destination_config)
             service_object.process()
         else:
             LOGGER.error(
-                'Unknown transformation type: %s, '
-                'Are you sure the service class is appropriately placed in the "services" '
-                'directory?', service_name)
+                'Unknown transformation type: %s, Are you sure the service class is '
+                'appropriately placed in the "services" directory?', service_name)
             return
 
     def handle_response(self, response):
@@ -81,15 +81,15 @@ class Search(object):
         # after the first continuity response, if the query is still running on the server side,
         # server will return 200 with 'links' inside the json response for the following requests
         if response.status_code == 202:
-            continuity_response = request_helper.get_continuity_final_response(response,
-                                                                               self.config['LE'])
-            if continuity_response is None:
+            final_response = request_helper.get_continuity_final_response(response,
+                                                                          self.config['LE'])
+            if final_response is None:
                 # a non-200 continuity response after the first 202 will produce an Empty
                 # response and needs no more work
 
                 return
 
-            self.process_final_response(continuity_response)
+            self.process_final_response(final_response)
 
         if response.status_code == 200:
             # this is where we get into transforming & pushing business
@@ -102,14 +102,13 @@ class Search(object):
 
         :return:
         """
-        query_period = int(self.search_config['query'].get('query_period'))
-        LOGGER.debug("Query period for search (seconds): %i", query_period)
+        LOGGER.debug("Query period for search (seconds): %i", self.query_period)
 
         auth = self.config['LE']
 
         self.handle_response(request_helper.post_le_search(self.search_config.get('query'), auth))
         LOGGER.info("Waiting for the next cycle of query period. see you in %s seconds.",
-                    query_period)
+                    self.query_period)
 
     def start(self):
         """

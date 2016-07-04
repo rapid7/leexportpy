@@ -3,6 +3,7 @@ import datetime
 DATEFORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
+# deprecated
 class LeRestResponse(object):
     """
     Helper class to wrap up response.

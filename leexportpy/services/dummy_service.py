@@ -11,17 +11,17 @@ class DummyService(Service):
     """
     En example service class to show how to provide a new service support.
     """
-    def __init__(self, data, api_key, destination_config):
+    def __init__(self, response, api_key, destination_config):
         """
         Initialize DummyService
         """
-        super(DummyService, self).__init__(data, api_key, destination_config)
+        super(DummyService, self).__init__(response, api_key, destination_config)
 
     def transform(self):
         """
         Transform DummyService data.
         """
-        return {'payload': self.data}
+        return {'payload': self.response}
 
     def push(self, payload):
         """
