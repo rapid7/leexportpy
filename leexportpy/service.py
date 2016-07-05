@@ -21,14 +21,14 @@ class Service(object):
         """
         raise NotImplementedError
 
-    def transform(self):
+    def _transform(self):
         """
         Abstract transform method. Converts data to 3rd push api data model. To be fully
         implemented in sub class.
         """
         raise NotImplementedError
 
-    def push(self, payload):
+    def _push(self, payload):
         """
         Method that takes care of pushing business.
 

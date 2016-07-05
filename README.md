@@ -1,4 +1,4 @@
-leexportpy
+``leexportpy
 ==========
 
 Introduction
@@ -40,6 +40,14 @@ Custom search destination configs:
 ### Hosted Graphite `hosted_graphite_service.py`
     
     metric_name = "hosted graphite metric name"
+
+### Kafka           `kafka_service.py`
+This is an attempt to show how to push your transformed Logentries data to a Kafka topic. Consumers of this topic can decide what action they are going to take based on the data produced into the queue.
+
+Leexportpy expects a statistics query here and gets the count values in the response for each group or timestamp data, appends to the Kafka topic.
+
+    brokers = comma seperated <host>:<port> list of kafka brokers, ex: localhost:9092,localhost:9093
+    topic   = kafka topic to append data
 
 ### Dummy           `dummy_service.py`
 This service module is an example to show how to create a new service module. Simply, `transform()` method returns data directly without any manipulation and `push()` method logs some info in the logger.
@@ -143,4 +151,4 @@ Class name should be the capitalized version of the module name, underscores (`_
 `push(url, api_key, payload)` method gets a url to push transformed data, an `api key` and a payload returned by transform() method which is your data to be pushed to the provided url. This method should be doing the necessary HTTP request such as POST/GET/PUT etc.
 
 ### Config file service name for searches
-The `service` provided in every search in `config.ini` should be your module name without the `_service.py` or in other words, your service name with only lowercase letters and spaces replaced by underscores. Example: service name: `My Application`, module name: `my_application_service.py` and service key in config ini: `my_application`
+The `service` provided in every search in `config.ini` should be your module name without the `_service.py` or in other words, your service name with only lowercase letters and spaces replaced by underscores. Example: service name: `My Application`, module name: `my_application_service.py` and service key in config ini: `my_application```

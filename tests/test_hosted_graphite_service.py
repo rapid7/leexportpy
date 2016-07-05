@@ -14,14 +14,14 @@ def test_convert_to_hostedgraphite_data():
                                                 req_ex.SERVICE_API_KEY,
                                                 conf_ex.SEARCH_HOSTED_GRAPHITE)
 
-    hg_data = hosted_graphite_job.transform()
+    hg_data = hosted_graphite_job._transform()
     pattern = re.compile("(\w+\s\d+\.\d+\s\d+\\n)+")
 
     assert pattern.match(hg_data)
 
 
 def test_process():
-    with patch.object(HostedGraphiteService, 'push', return_value=None) as mock_push:
+    with patch.object(HostedGraphiteService, '_push', return_value=None) as mock_push:
         hosted_graphite_job = HostedGraphiteService(resp_ex.FULL_TIMESERIES_RESP,
                                                     req_ex.SERVICE_API_KEY,
                                                     conf_ex.SEARCH_HOSTED_GRAPHITE)
@@ -39,6 +39,6 @@ def test_push():
     httpretty.register_uri(httpretty.PUT, req_ex.DEST_URL,
                            body="OK")
 
-    hosted_graphite_job.push("payload")
+    hosted_graphite_job._push("payload")
 
     assert httpretty.has_request()

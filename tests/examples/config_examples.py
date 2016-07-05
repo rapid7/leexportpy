@@ -13,8 +13,12 @@ GECKO_BAR_CHART_CONFIG = {"widget_type": "bar_chart",
 SEARCH_HOSTED_GRAPHITE = {"metric_name": "hg_metric",
                           "push_url": request_examples.DEST_URL}
 QUERY = 'where(event) calculate(count)'
-DUMMY_SEARCH_CONFIG = {'query': {'query_period': 300, 'logs': '', 'query_range': 30000, 'statement': QUERY},
+DUMMY_SEARCH_CONFIG = {'query': {'query_period': 300,
+                                 'logs': '',
+                                 'query_range': 30000,
+                                 'statement': QUERY},
                        'destination': {'service': 'dummy'}}
 DUMMY_CONFIG = {'LE': {'rw_api_key': 'test_rw_api_key', 'ro_api_key': 'test_ro_api_key'},
                 'Services':
                     {'dummy': {'api_key': 'my_dummy_api_key'}}}
+KAFKA_SEARCH_CONFIG = {"brokers": "localhost:9092", "topic": "test_topic"}

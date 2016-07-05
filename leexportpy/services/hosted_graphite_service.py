@@ -30,15 +30,15 @@ class HostedGraphiteService(Service):
         """
         Process HostedGraphite task.
         """
-        self.push(self.transform())
+        self._push(self._transform())
 
-    def push(self, payload):
+    def _push(self, payload):
         """
         Push payload to hosted_graphite url along with api key.
 
         :param payload: Data to be pushed.
         """
-        if super(HostedGraphiteService, self).push(payload):  # payload is not none
+        if super(HostedGraphiteService, self)._push(payload):  # payload is not none
             push_url = self.destination_config.get('push_url')
             resp = requests.put(push_url, auth=(self.api_key, ''), data=payload)
             LOGGER.info("Payload to be pushed: %s", payload)
@@ -56,7 +56,7 @@ class HostedGraphiteService(Service):
         """
         return time.mktime(datetime.datetime.strptime(date, DATEFORMAT).timetuple())
 
-    def transform(self):
+    def _transform(self):
         """
         Transform raw data to hosted graphite data.
         """
