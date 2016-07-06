@@ -1,1 +1,1 @@
-__author__ = 'stopal'
+__author__ = 'Logentries by Rapid7'
