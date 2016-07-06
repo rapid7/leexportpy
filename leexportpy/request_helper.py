@@ -3,9 +3,15 @@ import logging
 import time
 
 import requests
+import leexportpy
 
 LOGGER = logging.getLogger(__name__)
 QUERY_URL = 'https://rest.logentries.com/query/logs/'
+
+
+def generate_headers(x_api_key):
+    return {'x-api-key': x_api_key,
+            'User-Agent': 'leexportpy %s' % leexportpy.__version__}
 
 
 def do_get_le_url(url, x_api_key, params=None):
@@ -17,8 +23,8 @@ def do_get_le_url(url, x_api_key, params=None):
     :param params:      key value pairs to include in the get request.
     """
     LOGGER.debug("Making get request to the url: %s", url)
-    header = {'x-api-key': x_api_key}
-    return requests.get(url, headers=header, params=params)
+    headers = generate_headers(x_api_key)
+    return requests.get(url, headers=headers, params=params)
 
 
 def do_post_json_to_le(url, payload, x_api_key):
@@ -30,8 +36,8 @@ def do_post_json_to_le(url, payload, x_api_key):
     :param x_api_key:   x-api-key for Logentries
     """
     LOGGER.debug("Making post request with payload: %s to the url: %s", payload, url)
-    header = {'x-api-key': x_api_key}
-    return requests.post(url, json=payload, headers=header)
+    headers = generate_headers(x_api_key)
+    return requests.post(url, headers=headers, json=payload)
 
 
 def get_continuity_final_response(response, auth):
