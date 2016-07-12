@@ -42,12 +42,12 @@ Custom search destination configs:
     metric_name = "hosted graphite metric name"
 
 ### Kafka           `kafka_service.py`
-This is an attempt to show how to push your transformed Logentries data to a Kafka topic. Consumers of this topic can decide what action they are going to take based on the data produced into the queue.
+This is an attempt to show how to append your transformed Logentries data to a Kafka topic. Consumers of this topic can decide what action they are going to take based on the data produced into the queue.
 
-Leexportpy expects a statistics query here and gets the count values in the response for each group or timestamp data, appends to the Kafka topic.
+Leexportpy expects a statistics query here and gets the count values in the response for each group or timestamp data and then appends to the provided Kafka topic.
 
-    brokers = comma seperated <host>:<port> list of kafka brokers, ex: localhost:9092,localhost:9093
-    topic   = kafka topic to append data
+    brokers = <comma separated host:port of brokers e.g: “localhost:9092,localhost:9093”> 
+    topic   = <kafka topic to append data>
 
 ### Dummy           `dummy_service.py`
 This service module is an example to show how to create a new service module. Simply, `transform()` method returns data directly without any manipulation and `push()` method logs some info in the logger.
@@ -57,7 +57,11 @@ Deployment
 
 Leexportpy is completely installable via pip:
 
-`pip install <url_to_repository>`
+`pip install <url to repository>`
+
+or
+
+`pip install <directory to local copy of the project>`
 
 After a successful install, you will be able to manage the app with `leexportpy start` or `leexportpy stop` commands. See [Running](#running) for details.
 
@@ -65,8 +69,6 @@ Running
 -------
 
 ### Starting
-
-The user managing leexportpy should have sudo privileges because of pid file location and log file location.
 
     usage: leexportpy start [-h] -c CONFIG_FILE [-d]
     
@@ -82,11 +84,13 @@ There are two types of running modes are available:
 
 In the background(as a daemon):
 
+In daemon mode, the user managing leexportpy should have sudo privileges because of pid file location and log file location.
+
 `sudo application start -c /etc/leexportpy/config.ini -d`
 
 In the foreground:
 
-`sudo application start -c /etc/leexportpy/config.ini`
+`application start -c /etc/leexportpy/config.ini`
 
 **Note:** if it is going to be run in daemonized mode, config file path should be absolute path of the file.
 
@@ -100,7 +104,7 @@ If running in the background as a daemon(with -d argument):
 
 Configuration file
 ------------------
-Configuration file should given to the leexportpy as an argument along with start command and a mandatory option of `-c` or `--config-file` with the absolute path of file config file. For example: `sudo leexportpy.py start -c /etc/leexportpy/config.ini -d
+Configuration file should be given to the leexportpy as an argument along with start command and a mandatory option of `-c` or `--config-file` with the absolute path of file config file. For example: `sudo leexportpy.py start -c /etc/leexportpy/config.ini -d
 
     [LE]
         x_api_key = {your logentries read-only or read/write api key}
@@ -140,15 +144,15 @@ As leexportpy automatically discovers available 3rd party services at runtime, s
 All service modules should be placed under `services` package directory.
 
 ### Module Name
-Module name should always end with `_service.py`. The prefix should be the name of the service, spaces replaced by underscores (`_`) and all letters must be lowercase. Example: module name for the service `My Application` should be: `my_application_service.py`
+Module name should always end with `_service.py`. The prefix should be the name of the service, spaces replaced by underscores (`_`) and all letters must be lowercased. Example: module name for the service `My Application` should be: `my_application_service.py`
 
 ### Class Name
 Class name should be the capitalized version of the module name, underscores (`_`) replaced with empty string. Example: class name for `my_application_service.py` should be: `MyApplicationService`
 
 ### Methods to implement
-`process()` method should call `push` with the payload created by `transform()`. This is the module that triggers transforming and pushing.
-`transform()` method should be used to transform the data returned by Logentries REST API to the format expected by 3rd party.
-`push(url, api_key, payload)` method gets a url to push transformed data, an `api key` and a payload returned by transform() method which is your data to be pushed to the provided url. This method should be doing the necessary HTTP request such as POST/GET/PUT etc.
+`process()` method should call `_push` with the payload created by `_transform()`. This is the module that triggers transforming and pushing.
+`_transform()` method should be used to transform the data returned by Logentries REST API to the format expected by 3rd party.
+`_push(url, api_key, payload)` method gets a url to push transformed data, an `api key` and a payload returned by transform() method which is your data to be pushed to the provided url. This method should be doing the necessary HTTP request such as POST/GET/PUT etc.
 
 ### Config file service name for searches
-The `service` provided in every search in `config.ini` should be your module name without the `_service.py` or in other words, your service name with only lowercase letters and spaces replaced by underscores. Example: service name: `My Application`, module name: `my_application_service.py` and service key in config ini: `my_application```
+The `service` provided in every search in `config.ini` should be your module name without the `_service.py` or in other words, your service name with only lowercase letters and spaces replaced by underscores. Example: service name: `My Application`, module name: `my_application_service.py` and service key in config ini: `my_application`
