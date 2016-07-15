@@ -57,6 +57,10 @@ Deployment
 
 Leexportpy is completely installable via pip:
 
+`pip install leexportpy`
+
+or
+
 `pip install <url to repository>`
 
 or

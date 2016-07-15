@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
-
+import leexportpy
 setup(
     name='leexportpy',
-    version='0.1.7',
+    version=leexportpy.__version__,
     author='Safa Topal',
     author_email='Safa_Topal@rapid7.com',
     packages=find_packages(exclude=['*tests*']),
-    url='https://github.com/rapid7/logentries-leexportpy',
+    url='https://github.com/logentries/leexportpy',
     license='MIT',
     description='Logentries by Rapid7 log export proxy for external systems.',
     long_description=open('README.md').read(),
