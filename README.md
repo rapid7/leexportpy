@@ -61,7 +61,7 @@ Leexportpy is completely installable via pip:
 
 or
 
-`pip install <url to repository>`
+`pip install git+<url to git repository>`
 
 or
 
