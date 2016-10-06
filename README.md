@@ -111,7 +111,8 @@ Configuration file
 Configuration file should be given to the leexportpy as an argument along with start command and a mandatory option of `-c` or `--config-file` with the absolute path of file config file. For example: `sudo leexportpy.py start -c /etc/leexportpy/config.ini -d
 
     [LE]
-        x_api_key = {your logentries read-only or read/write api key}
+        ro_api_key = <your read-only apikey>
+        rw_api_key = <your read-write apikey> # if this is defined along with ro_api_key, leexportpy will prefer rw_api_key over ro_api_key
     
     [Services]
         [[{your 3rd party service name}]]
