@@ -13,7 +13,7 @@ If your desired 3rd party is not on the supported list, following the [rules for
 Supported 3rd parties
 ---------------------
 
-### Geckoboard      `geckoboard_service.py`
+### Geckoboard      `geckoboard_service`
 
 Custom search destination configs:
         
@@ -37,11 +37,11 @@ Custom search destination configs:
     widget_type = number_stat
     text = "Text to show at Number Stat widget"
 
-### Hosted Graphite `hosted_graphite_service.py`
+### Hosted Graphite `hosted_graphite`
     
     metric_name = "hosted graphite metric name"
 
-### Kafka           `kafka_service.py`
+### Kafka           `kafka`
 This is an attempt to show how to append your transformed Logentries data to a Kafka topic. Consumers of this topic can decide what action they are going to take based on the data produced into the queue.
 
 Leexportpy expects a statistics query here and gets the count values in the response for each group or timestamp data and then appends to the provided Kafka topic.
@@ -49,7 +49,7 @@ Leexportpy expects a statistics query here and gets the count values in the resp
     brokers = <comma separated host:port of brokers e.g: “localhost:9092,localhost:9093”> 
     topic   = <kafka topic to append data>
 
-### Dummy           `dummy_service.py`
+### Dummy           `dummy`
 This service module is an example to show how to create a new service module. Simply, `transform()` method returns data directly without any manipulation and `push()` method logs some info in the logger.
 
 Deployment
