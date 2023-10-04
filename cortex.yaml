@@ -1,0 +1,25 @@
+---
+info:
+  title: Leexportpy
+  description: Logentries Log Export application that gives you the ability to synchronize
+    your Logentries data with 3rd parties.
+  x-cortex-git:
+    github:
+      alias: r7org
+      repository: rapid7/leexportpy
+  x-cortex-tag: leexportpy
+  x-cortex-type: service
+  x-cortex-groups:
+  - target:library
+  - strategy:cloud
+  - status:obsolete
+  - exposure:internal-ship
+  x-cortex-owners:
+  - name: rapid7/dublin-dev-tools-cop
+    type: group
+    provider: GITHUB
+  x-cortex-domain-parents:
+  - tag: logsearch-dev-tools-cop
+openapi: 3.0.1
+servers:
+- url: "/"
